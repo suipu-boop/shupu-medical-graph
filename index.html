@@ -1,0 +1,374 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1>烟花驱邪医学机理 - 知识图谱</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1>烟花驱邪医学机理 - 知识图谱</h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #f8f9fa;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="yanhua">yanhua</option>
+                                
+                                    <option value="fangyi">fangyi</option>
+                                
+                                    <option value="quxie">quxie</option>
+                                
+                                    <option value="2000nian">2000nian</option>
+                                
+                                    <option value="liuhuang">liuhuang</option>
+                                
+                                    <option value="xiandai_zhuanhua">xiandai_zhuanhua</option>
+                                
+                                    <option value="wenhua_zhengming">wenhua_zhengming</option>
+                                
+                                    <option value="gonggong_weisheng">gonggong_weisheng</option>
+                                
+                                    <option value="chunyang">chunyang</option>
+                                
+                                    <option value="shajun">shajun</option>
+                                
+                                    <option value="liuhuang_xiandai">liuhuang_xiandai</option>
+                                
+                                    <option value="so2">so2</option>
+                                
+                                    <option value="kongqi_xiaodu">kongqi_xiaodu</option>
+                                
+                                    <option value="liuyang">liuyang</option>
+                                
+                                    <option value="anquan_yuzhi">anquan_yuzhi</option>
+                                
+                                    <option value="huanjing_zijing">huanjing_zijing</option>
+                                
+                                    <option value="nianshou">nianshou</option>
+                                
+                                    <option value="cangzhu">cangzhu</option>
+                                
+                                    <option value="taiyi">taiyi</option>
+                                
+                                    <option value="shizai">shizai</option>
+                                
+                                    <option value="yiqi">yiqi</option>
+                                
+                                    <option value="wenbing">wenbing</option>
+                                
+                                    <option value="jieqi">jieqi</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "#333333"}, "group": 1, "id": "yanhua", "label": "\u70df\u82b1\u9a71\u90aa", "shape": "dot", "size": 10, "title": "\u7206\u7af9\u9a71\u90aa\u7684\u533b\u5b66\u673a\u7406\u63a2\u7a76\u003cbr\u003e\u6838\u5fc3\u4e3b\u9898\uff1a\u4f20\u7edf\u667a\u6167\u7684\u73b0\u4ee3\u4ef7\u503c"}, {"font": {"color": "#333333"}, "group": 1, "id": "fangyi", "label": "\u9632\u75ab\u667a\u6167", "shape": "dot", "size": 10, "title": "\u53e4\u4ee3\u7fa4\u4f53\u514d\u75ab\u7b56\u7565\u003cbr\u003e\u73b0\u4ee3\u516c\u5171\u536b\u751f\u7684\u5148\u58f0"}, {"font": {"color": "#333333"}, "group": 2, "id": "quxie", "label": "\u9a71\u90aa", "shape": "dot", "size": 10, "title": "\u4e2d\u533b\u672f\u8bed\u003cbr\u003e\u9a71\u9664\u75c5\u90aa\u3001\u75ab\u6c14\u3001\u79fd\u6c14"}, {"font": {"color": "#333333"}, "group": 4, "id": "2000nian", "label": "2000\u5e74\u5386\u53f2", "shape": "dot", "size": 10, "title": "\u7206\u7af9\u8d77\u6e90\uff1a\u5148\u79e6\u71c3\u70e7\u7af9\u5b50\u003cbr\u003e\u9a71\u9b3c\u8f9f\u90aa\u7684\u539f\u59cb\u5f62\u6001"}, {"font": {"color": "#333333"}, "group": 2, "id": "liuhuang", "label": "\u786b\u78fa", "shape": "dot", "size": 10, "title": "\u7eaf\u9633\u4e4b\u54c1\u003cbr\u003e\u300a\u672c\u8349\u7eb2\u76ee\u300b\uff1a\u6cbb\u8bf8\u75ae\u3001\u6740\u866b"}, {"font": {"color": "#333333"}, "group": 5, "id": "xiandai_zhuanhua", "label": "\u73b0\u4ee3\u8f6c\u5316", "shape": "dot", "size": 10, "title": "\u4f20\u7edf\u667a\u6167\u7684\u73b0\u4ee3\u5e94\u7528\u003cbr\u003e\u79d1\u5b66\u9a8c\u8bc1\u3001\u89c4\u8303\u4f7f\u7528"}, {"font": {"color": "#333333"}, "group": 5, "id": "wenhua_zhengming", "label": "\u6587\u5316\u6b63\u540d", "shape": "dot", "size": 10, "title": "\u4e3a\u4f20\u7edf\u6587\u5316\u6b63\u540d\u003cbr\u003e\u79d1\u5b66\u89e3\u8bfb\u3001\u7406\u6027\u4f20\u627f"}, {"font": {"color": "#333333"}, "group": 5, "id": "gonggong_weisheng", "label": "\u516c\u5171\u536b\u751f", "shape": "dot", "size": 10, "title": "\u7fa4\u4f53\u9632\u75ab\u7b56\u7565\u003cbr\u003e\u793e\u533a\u7ea7\u7a7a\u6c14\u6d88\u6bd2"}, {"font": {"color": "#333333"}, "group": 2, "id": "chunyang", "label": "\u7eaf\u9633\u4e4b\u54c1", "shape": "dot", "size": 10, "title": "\u4e2d\u533b\u5bf9\u786b\u78fa\u6027\u8d28\u7684\u8ba4\u77e5\u003cbr\u003e\u6e29\u70ed\u3001\u5347\u6563\u3001\u6740\u83cc"}, {"font": {"color": "#333333"}, "group": 3, "id": "shajun", "label": "\u6740\u83cc\u4f5c\u7528", "shape": "dot", "size": 10, "title": "\u786b\u78fa\u71c3\u70e7\u4ea7\u751fSO\u2082\u003cbr\u003e\u5e7f\u8c31\u6297\u83cc\u3001\u6297\u75c5\u6bd2"}, {"font": {"color": "#333333"}, "group": 3, "id": "liuhuang_xiandai", "label": "\u786b\u78fa\u73b0\u4ee3\u7814\u7a76", "shape": "dot", "size": 10, "title": "\u786b\u5316\u6c22(H\u2082S)\u4fe1\u53f7\u5206\u5b50\u003cbr\u003e\u6297\u708e\u3001\u4fdd\u62a4\u7ec6\u80de"}, {"font": {"color": "#333333"}, "group": 3, "id": "so2", "label": "\u4e8c\u6c27\u5316\u786b", "shape": "dot", "size": 10, "title": "SO\u2082 - \u7a7a\u6c14\u4e2d\u7684\u9690\u5f62\u5b88\u62a4\u8005\u003cbr\u003e\u4f4e\u6d53\u5ea6\u6740\u83cc\u6d88\u6bd2\uff0c\u9ad8\u6d53\u5ea6\u6709\u5bb3"}, {"font": {"color": "#333333"}, "group": 3, "id": "kongqi_xiaodu", "label": "\u7a7a\u6c14\u6d88\u6bd2", "shape": "dot", "size": 10, "title": "SO\u2082\u7684\u6d88\u6bd2\u673a\u5236\u003cbr\u003e\u6c27\u5316\u75c5\u539f\u4f53\u7ec6\u80de\u819c"}, {"font": {"color": "#333333"}, "group": 3, "id": "liuyang", "label": "\u6d4f\u9633\u6096\u8bba", "shape": "dot", "size": 10, "title": "\u71c3\u653e\u6700\u591a\uff0c\u7a7a\u6c14\u4f18\u826f\u738794%\u003cbr\u003e\u8bc1\u660e\u9002\u91cfSO\u2082\u53ef\u88ab\u73af\u5883\u81ea\u51c0"}, {"font": {"color": "#333333"}, "group": 3, "id": "anquan_yuzhi", "label": "\u5b89\u5168\u9608\u503c", "shape": "dot", "size": 10, "title": "WHO\u6807\u51c6: 24\u5c0f\u65f6\u5e73\u574750\u03bcg/m\u00b3\u003cbr\u003e\u77ed\u671f\u5cf0\u503c500\u03bcg/m\u00b3"}, {"font": {"color": "#333333"}, "group": 5, "id": "huanjing_zijing", "label": "\u73af\u5883\u81ea\u51c0", "shape": "dot", "size": 10, "title": "\u5927\u6c14\u7684\u81ea\u51c0\u80fd\u529b\u003cbr\u003eSO\u2082\u7684\u81ea\u7136\u964d\u89e3"}, {"font": {"color": "#333333"}, "group": 4, "id": "nianshou", "label": "\u5e74\u517d\u4f20\u8bf4", "shape": "dot", "size": 10, "title": "\u4e0d\u5230100\u5e74\u5386\u53f2\u003cbr\u003e\u4f46\u7206\u7af9\u9a71\u90aa\u67092000\u5e74\u8bb0\u8f7d"}, {"font": {"color": "#333333"}, "group": 4, "id": "cangzhu", "label": "\u82cd\u672f\u718f\u70df", "shape": "dot", "size": 10, "title": "\u53e4\u4ee3\u7a7a\u6c14\u6d88\u6bd2\u6cd5\u003cbr\u003e\u300a\u8098\u540e\u5907\u6025\u65b9\u300b\u8bb0\u8f7d\u907f\u761f\u75ab"}, {"font": {"color": "#333333"}, "group": 4, "id": "taiyi", "label": "\u592a\u4e59\u6d41\u91d1\u6563", "shape": "dot", "size": 10, "title": "\u53e4\u4ee3\u9632\u75ab\u9999\u56ca\u003cbr\u003e\u96c4\u9ec4\u3001\u96cc\u9ec4\u3001\u6731\u7802\u7b49"}, {"font": {"color": "#333333"}, "group": 4, "id": "shizai", "label": "\u53f2\u8f7d\u9632\u75ab", "shape": "dot", "size": 10, "title": "\u5386\u4ee3\u75ab\u75c5\u8bb0\u5f55\u003cbr\u003e\u7206\u7af9\u4e0e\u75ab\u60c5\u7684\u5173\u7cfb"}, {"font": {"color": "#333333"}, "group": 2, "id": "yiqi", "label": "\u75ab\u6c14", "shape": "dot", "size": 10, "title": "\u4e2d\u533b\u5bf9\u4f20\u67d3\u75c5\u7684\u8ba4\u77e5\u003cbr\u003e\u5177\u6709\u4f20\u67d3\u6027\u7684\u75c5\u90aa"}, {"font": {"color": "#333333"}, "group": 2, "id": "wenbing", "label": "\u6e29\u75c5", "shape": "dot", "size": 10, "title": "\u4e2d\u533b\u4f20\u67d3\u75c5\u5b66\u003cbr\u003e\u51ac\u6625\u5b63\u8282\u9ad8\u53d1"}, {"font": {"color": "#333333"}, "group": 2, "id": "jieqi", "label": "\u8282\u6c14\u9632\u75ab", "shape": "dot", "size": 10, "title": "\u4e8c\u5341\u56db\u8282\u6c14\u4e0e\u75be\u75c5\u003cbr\u003e\u51ac\u6625\u4e4b\u4ea4\u91cd\u70b9\u9632\u62a4"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "yanhua", "label": "\u672c\u8d28", "to": "fangyi", "width": 1}, {"arrows": "to", "from": "yanhua", "label": "\u4e2d\u533b\u89e3\u91ca", "to": "quxie", "width": 1}, {"arrows": "to", "from": "yanhua", "label": "\u5386\u53f2\u6e0a\u6e90", "to": "2000nian", "width": 1}, {"arrows": "to", "from": "yanhua", "label": "\u6838\u5fc3\u6210\u5206", "to": "liuhuang", "width": 1}, {"arrows": "to", "from": "yanhua", "label": "\u53d1\u5c55\u65b9\u5411", "to": "xiandai_zhuanhua", "width": 1}, {"arrows": "to", "from": "yanhua", "label": "\u76ee\u6807", "to": "wenhua_zhengming", "width": 1}, {"arrows": "to", "from": "fangyi", "label": "\u73b0\u4ee3\u5e94\u7528", "to": "gonggong_weisheng", "width": 1}, {"arrows": "to", "from": "liuhuang", "label": "\u4e2d\u533b\u5c5e\u6027", "to": "chunyang", "width": 1}, {"arrows": "to", "from": "liuhuang", "label": "\u836f\u7406\u4f5c\u7528", "to": "shajun", "width": 1}, {"arrows": "to", "from": "liuhuang", "label": "\u73b0\u4ee3\u7814\u7a76", "to": "liuhuang_xiandai", "width": 1}, {"arrows": "to", "from": "shajun", "label": "\u4ea7\u751f", "to": "so2", "width": 1}, {"arrows": "to", "from": "so2", "label": "\u529f\u80fd", "to": "kongqi_xiaodu", "width": 1}, {"arrows": "to", "from": "so2", "label": "\u5b9e\u8bc1", "to": "liuyang", "width": 1}, {"arrows": "to", "from": "so2", "label": "\u5242\u91cf\u63a7\u5236", "to": "anquan_yuzhi", "width": 1}, {"arrows": "to", "from": "kongqi_xiaodu", "label": "\u5e94\u7528\u4e8e", "to": "fangyi", "width": 1}, {"arrows": "to", "from": "liuyang", "label": "\u8bc1\u660e", "to": "huanjing_zijing", "width": 1}, {"arrows": "to", "from": "2000nian", "label": "\u5bf9\u6bd4", "to": "nianshou", "width": 1}, {"arrows": "to", "from": "2000nian", "label": "\u540c\u671f\u65b9\u6cd5", "to": "cangzhu", "width": 1}, {"arrows": "to", "from": "2000nian", "label": "\u9632\u75ab\u4f53\u7cfb", "to": "taiyi", "width": 1}, {"arrows": "to", "from": "2000nian", "label": "\u6587\u732e\u652f\u6491", "to": "shizai", "width": 1}, {"arrows": "to", "from": "cangzhu", "label": "\u76f8\u540c\u76ee\u7684", "to": "kongqi_xiaodu", "width": 1}, {"arrows": "to", "from": "quxie", "label": "\u9a71\u9664\u5bf9\u8c61", "to": "yiqi", "width": 1}, {"arrows": "to", "from": "yiqi", "label": "\u5bfc\u81f4", "to": "wenbing", "width": 1}, {"arrows": "to", "from": "wenbing", "label": "\u65f6\u95f4\u89c4\u5f8b", "to": "jieqi", "width": 1}, {"arrows": "to", "from": "jieqi", "label": "\u6307\u5bfc", "to": "fangyi", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": true, "forceAtlas2Based": {"gravitationalConstant": -100, "centralGravity": 0.005, "springLength": 150, "springConstant": 0.18, "damping": 0.4, "avoidOverlap": 0.5}, "maxVelocity": 50, "minVelocity": 0.1, "solver": "forceAtlas2Based", "stabilization": {"enabled": true, "iterations": 1000, "updateInterval": 25}}, "nodes": {"font": {"size": 16, "face": "MicrosoftYaHei,SimHei,sans-serif"}, "borderWidth": 2, "borderWidthSelected": 4}, "edges": {"font": {"size": 12, "face": "MicrosoftYaHei,SimHei,sans-serif"}, "smooth": {"type": "continuous"}, "arrows": {"to": {"enabled": true, "scaleFactor": 0.5}}}, "groups": {"1": {"color": {"background": "#e74c3c", "border": "#c0392b"}, "font": {"color": "white", "size": 18, "bold": true}}, "2": {"color": {"background": "#27ae60", "border": "#1e8449"}, "font": {"color": "white"}}, "3": {"color": {"background": "#3498db", "border": "#2980b9"}, "font": {"color": "white"}}, "4": {"color": {"background": "#f39c12", "border": "#d68910"}, "font": {"color": "white"}}, "5": {"color": {"background": "#9b59b6", "border": "#8e44ad"}, "font": {"color": "white"}}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
