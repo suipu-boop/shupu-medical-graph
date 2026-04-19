@@ -89,11 +89,72 @@ function selectNode(nodeId) {
              
 
              
-        </style>
+        
+        #node-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: none;
+        }
+        #node-popup h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        #node-popup .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        #node-popup .close-btn:hover {
+            color: #333;
+        }
+        #node-popup .info-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        #node-popup .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+</style>
     </head>
 
 
     <body>
+        <div id="overlay" onclick="closePopup()"></div>
+        <div id="node-popup">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h3 id="popup-title"></h3>
+            <div id="popup-content"></div>
+        </div>
+
         <div class="card" style="width: 100%">
             
                 <div id="select-menu" class="card-header">
