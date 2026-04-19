@@ -3,45 +3,48 @@
         <meta charset="utf-8">
         
             <script>
-// Utils for vis-network bindings
-function neighbourhoodHighlight(params) {
-    var allNodes = nodes.get({returnType:"Object"});
-    var allEdges = edges.get({returnType:"Object"});
+// 弹窗功能
+function showPopup(nodeId) {
+    var node = nodes.get(nodeId);
+    if (!node) return;
     
-    if (params.nodes.length > 0) {
-        var selectedNode = params.nodes[0];
-        var connectedNodes = network.getConnectedNodes(selectedNode);
-        var connectedEdges = network.getConnectedEdges(selectedNode);
-        
-        for (var nodeId in allNodes) {
-            if (connectedNodes.indexOf(nodeId) === -1 && nodeId !== selectedNode) {
-                allNodes[nodeId].color = {background: 'rgba(200,200,200,0.5)', border: 'rgba(200,200,200,0.5)'};
-                allNodes[nodeId].font = {color: 'rgba(200,200,200,0.5)'};
-            }
-        }
-        
-        for (var edgeId in allEdges) {
-            if (connectedEdges.indexOf(edgeId) === -1) {
-                allEdges[edgeId].color = {color: 'rgba(200,200,200,0.1)', highlight: 'rgba(200,200,200,0.1)'};
-            }
-        }
-    } else {
-        for (var nodeId in allNodes) {
-            allNodes[nodeId].color = undefined;
-            allNodes[nodeId].font = undefined;
-        }
-        for (var edgeId in allEdges) {
-            allEdges[edgeId].color = undefined;
-        }
+    var popup = document.getElementById('node-popup');
+    var overlay = document.getElementById('overlay');
+    
+    document.getElementById('popup-title').innerHTML = node.label;
+    
+    var html = '<div class="info-item"><span class="info-label">ID:</span> ' + node.id + '</div>';
+    html += '<div class="info-item"><span class="info-label">分组:</span> ' + (node.group || '无') + '</div>';
+    if (node.title) {
+        html += '<div class="info-item"><span class="info-label">详细说明:</span><br>' + node.title.replace(/
+/g, '<br>') + '</div>';
     }
-    nodes.update(allNodes);
-    edges.update(allEdges);
+    
+    // 查找关联节点
+    var connectedNodes = network.getConnectedNodes(nodeId);
+    if (connectedNodes.length > 0) {
+        html += '<div class="info-item"><span class="info-label">关联节点:</span><br>';
+        for (var i = 0; i < connectedNodes.length; i++) {
+            var connected = nodes.get(connectedNodes[i]);
+            html += '• ' + connected.label + '<br>';
+        }
+        html += '</div>';
+    }
+    
+    document.getElementById('popup-content').innerHTML = html;
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
 }
 
-function selectNode(nodeId) {
-    network.selectNodes([nodeId]);
-    network.focus(nodeId, {scale: 1.2});
-    neighbourhoodHighlight({nodes: [nodeId]});
+function closePopup() {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('node-popup').style.display = 'none';
+}
+
+function neighbourhoodHighlight(params) {
+    if (params.nodes.length > 0) {
+        showPopup(params.nodes[0]);
+    }
 }
 </script>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -380,7 +383,7 @@ function selectNode(nodeId) {
                   // adding nodes and edges to the graph
                   data = {nodes: nodes, edges: edges};
 
-                  var options = {"physics": {"enabled": false, "stabilization": {"enabled": true}}, "layout": {"improvedLayout": true}, "forceAtlas2Based": {"gravitationalConstant": -100, "centralGravity": 0.005, "springLength": 150, "springConstant": 0.18, "damping": 0.4, "avoidOverlap": 0.5}, "maxVelocity": 50, "minVelocity": 0.1, "solver": "forceAtlas2Based", "stabilization": {"enabled": true, "iterations": 1000, "updateInterval": 25}}, "nodes": {"font": {"size": 16, "face": "MicrosoftYaHei,SimHei,sans-serif"}, "borderWidth": 2, "borderWidthSelected": 4}, "edges": {"font": {"size": 12, "face": "MicrosoftYaHei,SimHei,sans-serif"}, "smooth": {"type": "continuous"}, "arrows": {"to": {"enabled": true, "scaleFactor": 0.5}}}, "groups": {"1": {"color": {"background": "#e74c3c", "border": "#c0392b"}, "font": {"color": "white", "size": 18, "bold": true}}, "2": {"color": {"background": "#27ae60", "border": "#1e8449"}, "font": {"color": "white"}}, "3": {"color": {"background": "#3498db", "border": "#2980b9"}, "font": {"color": "white"}}, "4": {"color": {"background": "#f39c12", "border": "#d68910"}, "font": {"color": "white"}}, "5": {"color": {"background": "#9b59b6", "border": "#8e44ad"}, "font": {"color": "white"}}}};
+                  var options = {"physics": {"enabled": false, "forceAtlas2Based": {"gravitationalConstant": -100, "centralGravity": 0.005, "springLength": 150, "springConstant": 0.18, "damping": 0.4, "avoidOverlap": 0.5}, "maxVelocity": 50, "minVelocity": 0.1, "solver": "forceAtlas2Based", "stabilization": {"enabled": true, "iterations": 1000, "updateInterval": 25}}, "nodes": {"font": {"size": 16, "face": "MicrosoftYaHei,SimHei,sans-serif"}, "borderWidth": 2, "borderWidthSelected": 4}, "edges": {"font": {"size": 12, "face": "MicrosoftYaHei,SimHei,sans-serif"}, "smooth": {"type": "continuous"}, "arrows": {"to": {"enabled": true, "scaleFactor": 0.5}}}, "groups": {"1": {"color": {"background": "#e74c3c", "border": "#c0392b"}, "font": {"color": "white", "size": 18, "bold": true}}, "2": {"color": {"background": "#27ae60", "border": "#1e8449"}, "font": {"color": "white"}}, "3": {"color": {"background": "#3498db", "border": "#2980b9"}, "font": {"color": "white"}}, "4": {"color": {"background": "#f39c12", "border": "#d68910"}, "font": {"color": "white"}}, "5": {"color": {"background": "#9b59b6", "border": "#8e44ad"}, "font": {"color": "white"}}}};
 
                   
 
