@@ -2,12 +2,53 @@
     <head>
         <meta charset="utf-8">
         
-            <script src="lib/bindings/utils.js"></script>
+            <script>
+// Utils for vis-network bindings
+function neighbourhoodHighlight(params) {
+    var allNodes = nodes.get({returnType:"Object"});
+    var allEdges = edges.get({returnType:"Object"});
+    
+    if (params.nodes.length > 0) {
+        var selectedNode = params.nodes[0];
+        var connectedNodes = network.getConnectedNodes(selectedNode);
+        var connectedEdges = network.getConnectedEdges(selectedNode);
+        
+        for (var nodeId in allNodes) {
+            if (connectedNodes.indexOf(nodeId) === -1 && nodeId !== selectedNode) {
+                allNodes[nodeId].color = {background: 'rgba(200,200,200,0.5)', border: 'rgba(200,200,200,0.5)'};
+                allNodes[nodeId].font = {color: 'rgba(200,200,200,0.5)'};
+            }
+        }
+        
+        for (var edgeId in allEdges) {
+            if (connectedEdges.indexOf(edgeId) === -1) {
+                allEdges[edgeId].color = {color: 'rgba(200,200,200,0.1)', highlight: 'rgba(200,200,200,0.1)'};
+            }
+        }
+    } else {
+        for (var nodeId in allNodes) {
+            allNodes[nodeId].color = undefined;
+            allNodes[nodeId].font = undefined;
+        }
+        for (var edgeId in allEdges) {
+            allEdges[edgeId].color = undefined;
+        }
+    }
+    nodes.update(allNodes);
+    edges.update(allEdges);
+}
+
+function selectNode(nodeId) {
+    network.selectNodes([nodeId]);
+    network.focus(nodeId, {scale: 1.2});
+    neighbourhoodHighlight({nodes: [nodeId]});
+}
+</script>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
             <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             
-                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
-                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+                
+                
             
         
 <center>
@@ -189,74 +230,14 @@
               };
 
               
-                  new TomSelect("#select-node",{
-                      create: false,
-                      sortField: {
-                          field: "text",
-                          direction: "asc"
-                      }
-                  });
+                  
               
 
               
                   // explicitly using onItemAdd and this function as we need to save multiple values
-                  let updateValueFilter = function() {
-                      return function () {
-                      filter['value'].push(arguments[0])
-                      }
-                  }
+                  
 
-                  let valueControl = new TomSelect("#select-value",{
-                      maxItems: null,
-                      valueField: 'id',
-                      labelField: 'title',
-                      searchField: 'title',
-                      create: false,
-                      sortField: {
-                          field: "text",
-                          direction: "asc"
-                      },
-                      onItemAdd: updateValueFilter()
-                  });
-
-                  let addValues = function() {
-                      return function () {
-                          // clear the current value options and add the selected attribute values
-                          // tom-select handles duplicates
-                          let selectedProperty = arguments[0];
-                          valueControl.clear();
-                          valueControl.clearOptions();
-                          filter['value'] = []
-                          if (filter['item'] === 'node') {
-                              for (let each in allNodes) {
-                                  valueControl.addOption({
-                                      id:allNodes[each][selectedProperty],
-                                      title:allNodes[each][selectedProperty]
-                                  })
-                              }
-                          }
-                          else if (filter['item'] === 'edge') {
-                              for (let each in allEdges) {
-                                  valueControl.addOption({
-                                      id:allEdges[each][selectedProperty],
-                                      title:allEdges[each][selectedProperty]
-                                  })
-                              }
-                          }
-                      }
-                  };
-
-                  let propControl = new TomSelect("#select-property",{
-                      valueField: 'id',
-                      labelField: 'title',
-                      searchField: 'title',
-                      create: false,
-                      sortField: {
-                          field: "text",
-                          direction: "asc"
-                      },
-                      onItemAdd: addValues()
-                  });
+                  
 
                   let addProperties = function() {
                       return function () {
@@ -291,14 +272,7 @@
                       }
                   };
 
-                  let itemControl = new TomSelect("#select-item",{
-                      create: false,
-                      sortField:{
-                          field: "text",
-                          direction: "asc"
-                      },
-                      onItemAdd: addProperties()
-                  });
+                  
 
                   function clearFilter(reset) {
                       // utility function to clear all the selected filter options
