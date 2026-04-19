@@ -44,7 +44,6 @@ function closePopup() {
 function neighbourhoodHighlight(params) {
     console.log("点击事件触发", params);
     if (params.nodes.length > 0) {
-        alert("点击了节点: " + params.nodes[0]);
         showPopup(params.nodes[0]);
     }
 }
